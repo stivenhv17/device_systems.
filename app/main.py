@@ -1,13 +1,15 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 
 from app.routes.user_routes import router as user_router
 
 
 app = FastAPI(
-    title="Device Systems API",
+    title="device_systems API",
     description="API REST para la gestión de usuarios del sistema device_systems.",
-    version="1.0"
+    version="2.0.0",
+    contact={
+        "name": "Stiven Hurtado Valencia"
+    }
 )
 
 
@@ -17,7 +19,7 @@ async def agregar_cabeceras(request: Request, call_next):
     response = await call_next(request)
 
     response.headers["X-App-Name"] = "device_systems"
-    response.headers["X-API-Version"] = "1.0"
+    response.headers["X-API-Version"] = "2.0.0"
 
     return response
 
@@ -25,7 +27,11 @@ async def agregar_cabeceras(request: Request, call_next):
 app.include_router(user_router)
 
 
-@app.get("/")
+@app.get(
+    "/",
+    summary="Verificar funcionamiento de la API",
+    description="Comprueba que la API device_systems se encuentre funcionando correctamente."
+)
 def inicio():
     return {
         "message": "API device_systems funcionando correctamente."

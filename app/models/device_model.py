@@ -7,8 +7,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.connection import Base
 
 
-class User(Base):
-    __tablename__ = "users"
+class Device(Base):
+    __tablename__ = "devices"
 
     id: Mapped[int] = mapped_column(
         Integer,
@@ -21,19 +21,24 @@ class User(Base):
         nullable=False
     )
 
-    email: Mapped[str] = mapped_column(
-        String(150),
+    serial_number: Mapped[str] = mapped_column(
+        String(100),
         unique=True,
         nullable=False,
         index=True
     )
 
-    role: Mapped[str] = mapped_column(
-        String(20),
+    device_type: Mapped[str] = mapped_column(
+        String(50),
         nullable=False
     )
 
-    is_active: Mapped[bool] = mapped_column(
+    brand: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True
+    )
+
+    is_available: Mapped[bool] = mapped_column(
         Boolean,
         default=True,
         nullable=False
@@ -41,11 +46,13 @@ class User(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=lambda: datetime.now(ZoneInfo("America/Bogota")),
+        default=lambda: datetime.now(
+            ZoneInfo("America/Bogota")
+        ),
         nullable=False
     )
 
     loans = relationship(
         "Loan",
-        back_populates="user"
+        back_populates="device"
     )

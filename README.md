@@ -1,6 +1,6 @@
 # device_systems
 
-API REST desarrollada con **Python, FastAPI y SQLAlchemy** para la gestión de usuarios. Esta versión permite registrar, consultar, actualizar y eliminar usuarios, almacenando la información de forma persistente en una base de datos SQLite.
+API REST desarrollada con **Python, FastAPI y SQLAlchemy** para la gestión de usuarios, dispositivos y préstamos. El proyecto utiliza una base de datos SQLite para almacenar la información de forma persistente y Alembic para administrar las migraciones de la base de datos.
 
 El proyecto hace parte del proceso de formación del programa **Análisis y Desarrollo de Software (ADSO) – SENA**.
 
@@ -16,6 +16,7 @@ El proyecto hace parte del proceso de formación del programa **Análisis y Desa
 * Uvicorn
 * Swagger UI
 * ReDoc
+* Alembic
 * UV
 * tzdata
 * Git y Git Flow
@@ -24,9 +25,11 @@ El proyecto hace parte del proceso de formación del programa **Análisis y Desa
 
 ## Descripción del proyecto
 
-`device_systems` es una API REST que permite administrar usuarios mediante diferentes endpoints.
+`device_systems` es una API REST desarrollada para administrar usuarios, dispositivos y préstamos dentro de un sistema de gestión.
 
-En esta versión se reemplazó el almacenamiento temporal en memoria por una base de datos SQLite, utilizando SQLAlchemy para realizar las operaciones de persistencia.
+El proyecto comenzó utilizando almacenamiento temporal en memoria y posteriormente evolucionó hacia una solución con persistencia mediante **SQLAlchemy y SQLite**.
+
+En la versión actual se incorporó **Alembic** para controlar las migraciones de la base de datos y se agregaron nuevos modelos relacionados con dispositivos y préstamos.
 
 La aplicación permite:
 
@@ -38,15 +41,29 @@ La aplicación permite:
 * Eliminar usuarios.
 * Filtrar usuarios por rol.
 * Filtrar usuarios por estado.
-* Ordenar los resultados por nombre o fecha de creación.
-* Validar los datos recibidos mediante Pydantic.
-* Evitar el registro de correos duplicados.
-* Validar los roles permitidos.
-* Manejar usuarios inexistentes.
+* Ordenar usuarios por nombre o fecha de creación.
+* Registrar dispositivos.
+* Consultar dispositivos.
+* Actualizar dispositivos.
+* Eliminar dispositivos.
+* Filtrar dispositivos por tipo.
+* Filtrar dispositivos por disponibilidad.
+* Filtrar dispositivos por marca.
+* Buscar dispositivos mediante texto.
+* Registrar préstamos.
+* Consultar préstamos.
+* Consultar préstamos por usuario.
+* Consultar historial de préstamos de dispositivos.
+* Filtrar préstamos por estado.
+* Filtrar préstamos por correo del usuario.
+* Filtrar préstamos por tipo de dispositivo.
+* Consultar información relacionada mediante consultas `JOIN`.
+* Registrar devoluciones.
+* Actualizar automáticamente la disponibilidad de los dispositivos.
+* Validar los datos mediante Pydantic.
 * Manejar errores mediante códigos de respuesta HTTP.
-* Mantener los registros almacenados después de reiniciar el servidor.
-
-Los datos se almacenan en el archivo `device_systems.db`, por lo que permanecen disponibles después de detener y volver a iniciar la aplicación.
+* Mantener los registros almacenados en SQLite.
+* Administrar cambios de estructura de la base de datos mediante Alembic.
 
 ---
 
@@ -54,6 +71,7 @@ Los datos se almacenan en el archivo `device_systems.db`, por lo que permanecen 
 
 ```text
 device_systems/
+│
 ├── app/
 │   ├── main.py
 │   ├── __init__.py
@@ -62,31 +80,74 @@ device_systems/
 │   │   ├── connection.py
 │   │   └── __init__.py
 │   │
-│   ├── models/
-│   │   ├── user_model.py
+│   ├── dependencies/
+│   │   ├── database_dependency.py
 │   │   └── __init__.py
 │   │
-│   ├── schemas/
-│   │   ├── user_schema.py
+│   ├── models/
+│   │   ├── user_model.py
+│   │   ├── device_model.py
+│   │   ├── loan_model.py
 │   │   └── __init__.py
 │   │
 │   ├── routes/
 │   │   ├── user_routes.py
+│   │   ├── device_routes.py
+│   │   ├── loan_routes.py
 │   │   └── __init__.py
 │   │
-│   ├── services/
-│   │   ├── user_service.py
+│   ├── schemas/
+│   │   ├── user_schema.py
+│   │   ├── device_schema.py
+│   │   ├── loan_schema.py
 │   │   └── __init__.py
 │   │
-│   └── dependencies/
-│       ├── database_dependency.py
+│   └── services/
+│       ├── user_service.py
+│       ├── device_service.py
+│       ├── loan_service.py
 │       └── __init__.py
 │
+├── alembic/
+│   ├── versions/
+│   │   └── 226c24a90b7c_crear_dispositivos_y_prestamos.py
+│   ├── env.py
+│   ├── README
+│   └── script.py.mako
+│
 ├── evidencias/
+│   ├── anteriores/
+│   │   ├── Evidencia01.png
+│   │   ├── Evidencia02.png
+│   │   ├── ...
+│   │   └── Evidencia17.png
+│   │
+│   └── ev10/
+│       ├── 01_historial_alembic.png
+│       ├── 02_upgrade_head.png
+│       ├── 03_tablas_bd.png
+│       ├── 04_modelos_relaciones.png
+│       ├── 05_schemas_pydantic.png
+│       ├── 06_swagger_completo.png
+│       ├── 07_filtro_device_type.png
+│       ├── 08_crear_prestamo.png
+│       ├── 09_dispositivo_no_disponible.png
+│       ├── 10_loan_details.png
+│       ├── 11_filtros_prestamos.png
+│       ├── 12_prestamos_usuario.png
+│       ├── 13_prestamos_dispositivo.png
+│       ├── 14_devolver_prestamo.png
+│       ├── 15_dispositivo_disponible.png
+│       ├── 16_usuario_no_existe.png
+│       ├── 17_prestamo_ya_devuelto.png
+│       └── 18_redoc.png
+│
 ├── device_systems.db
 ├── .env
 ├── .env.example
 ├── .gitignore
+├── .python-version
+├── alembic.ini
 ├── README.md
 ├── pyproject.toml
 ├── requirements.txt
@@ -99,11 +160,13 @@ device_systems/
 
 ### `app/main.py`
 
-Es el archivo principal de la aplicación. Configura FastAPI, crea las tablas de la base de datos y registra las rutas de usuarios.
+Es el archivo principal de la aplicación. Configura FastAPI, registra los routers de usuarios, dispositivos y préstamos y configura la documentación de la API.
+
+La estructura actual utiliza **Alembic para administrar el esquema de la base de datos**, por lo que la aplicación no crea las tablas mediante `Base.metadata.create_all()`.
 
 ### `app/database/connection.py`
 
-Configura la conexión con SQLite mediante SQLAlchemy. También define el motor de conexión, las sesiones y la clase base de los modelos.
+Configura la conexión con SQLite mediante SQLAlchemy.
 
 La base de datos utilizada es:
 
@@ -111,11 +174,59 @@ La base de datos utilizada es:
 sqlite:///./device_systems.db
 ```
 
-### `app/models/user_model.py`
+También define el motor de conexión, las sesiones y la clase base `Base` utilizada por los modelos.
 
-Contiene el modelo `User`, que representa la tabla `users` en la base de datos.
+### `app/models/`
 
-El modelo contiene los siguientes campos:
+Contiene los modelos de SQLAlchemy que representan las tablas de la base de datos:
+
+* `user_model.py`: modelo `User`.
+* `device_model.py`: modelo `Device`.
+* `loan_model.py`: modelo `Loan`.
+
+Los modelos también contienen las relaciones entre usuarios, dispositivos y préstamos.
+
+### `app/schemas/`
+
+Contiene los esquemas de Pydantic utilizados para validar los datos recibidos por la API y estructurar las respuestas.
+
+Se encuentran:
+
+* `user_schema.py`
+* `device_schema.py`
+* `loan_schema.py`
+
+### `app/routes/`
+
+Contiene los endpoints de la API:
+
+* `user_routes.py`: endpoints de usuarios.
+* `device_routes.py`: endpoints de dispositivos.
+* `loan_routes.py`: endpoints de préstamos.
+
+### `app/services/`
+
+Contiene la lógica de negocio y las consultas realizadas sobre la base de datos:
+
+* `user_service.py`
+* `device_service.py`
+* `loan_service.py`
+
+Esta separación permite mantener las rutas más organizadas y separar la recepción de solicitudes de la lógica de negocio.
+
+### `app/dependencies/database_dependency.py`
+
+Contiene la dependencia `get_db`, utilizada mediante `Depends()` para proporcionar una sesión de SQLAlchemy a los endpoints y cerrarla al finalizar la solicitud.
+
+---
+
+# Modelos y relaciones
+
+## Modelo `User`
+
+El modelo `User` representa la tabla `users`.
+
+Sus principales campos son:
 
 * `id`
 * `name`
@@ -124,77 +235,226 @@ El modelo contiene los siguientes campos:
 * `is_active`
 * `created_at`
 
-La fecha de creación utiliza la zona horaria:
+Un usuario puede tener varios préstamos mediante la relación:
 
 ```text
-America/Bogota
+User → Loan
 ```
 
-### `app/schemas/user_schema.py`
+La relación se configura utilizando:
 
-Contiene los esquemas de Pydantic utilizados para validar los datos de entrada y definir la información que devuelve la API.
-
-### `app/routes/user_routes.py`
-
-Define los endpoints de la API y recibe las solicitudes HTTP.
-
-### `app/services/user_service.py`
-
-Contiene la lógica de las operaciones CRUD, las consultas, los filtros, el ordenamiento y las validaciones de negocio.
-
-### `app/dependencies/database_dependency.py`
-
-Contiene la dependencia `get_db`, que proporciona una sesión de base de datos a los endpoints y la cierra al terminar la solicitud.
+```python
+loans = relationship("Loan", back_populates="user")
+```
 
 ---
 
-## SQLAlchemy y Pydantic
+## Modelo `Device`
+
+El modelo `Device` representa la tabla `devices`.
+
+Sus campos principales son:
+
+* `id`
+* `name`
+* `serial_number`
+* `device_type`
+* `brand`
+* `is_available`
+* `created_at`
+
+Un dispositivo puede tener varios registros históricos de préstamos:
+
+```text
+Device → Loan
+```
+
+La relación se configura utilizando:
+
+```python
+loans = relationship("Loan", back_populates="device")
+```
+
+---
+
+## Modelo `Loan`
+
+El modelo `Loan` representa la tabla `loans`.
+
+Sus campos principales son:
+
+* `id`
+* `user_id`
+* `device_id`
+* `loan_date`
+* `return_date`
+* `status`
+
+El préstamo establece las relaciones entre un usuario y un dispositivo:
+
+```text
+User 1 ──────── N Loan N ──────── 1 Device
+```
+
+Las relaciones utilizan:
+
+```python
+user = relationship("User", back_populates="loans")
+device = relationship("Device", back_populates="loans")
+```
+
+De esta forma, un usuario puede tener varios préstamos y un dispositivo puede tener un historial de varios préstamos.
+
+---
+
+# SQLAlchemy y Pydantic
 
 En el proyecto se utilizan SQLAlchemy y Pydantic para responsabilidades diferentes.
 
-### Modelo SQLAlchemy
+## SQLAlchemy
 
-El modelo `User`, ubicado en:
+SQLAlchemy se encarga de representar los modelos, establecer relaciones y realizar operaciones sobre la base de datos.
 
-```text
-app/models/user_model.py
-```
-
-representa la tabla `users` de SQLite.
-
-Define los campos y las restricciones de almacenamiento:
-
-* `id`: identificador del usuario y clave primaria.
-* `name`: nombre del usuario.
-* `email`: correo electrónico único.
-* `role`: rol del usuario.
-* `is_active`: estado del usuario.
-* `created_at`: fecha y hora de creación.
-
-SQLAlchemy permite consultar, insertar, actualizar y eliminar los registros de la base de datos.
-
-### Esquemas Pydantic
-
-Los esquemas ubicados en:
+Los modelos principales son:
 
 ```text
-app/schemas/user_schema.py
+User
+Device
+Loan
 ```
 
-validan la información recibida y establecen la estructura de las respuestas.
+SQLAlchemy permite realizar consultas, inserciones, actualizaciones, eliminaciones y consultas relacionadas mediante `JOIN`.
 
-Se utilizan los siguientes esquemas:
+## Pydantic
 
-* `UserCreate`: datos para registrar un usuario.
-* `UserUpdate`: datos para actualizar completamente un usuario.
-* `UserPatch`: campos que se pueden modificar parcialmente.
-* `UserResponse`: información que devuelve la API.
+Pydantic se utiliza para validar los datos recibidos por la API y establecer la estructura de las respuestas.
 
-De esta manera, **SQLAlchemy se encarga de la interacción con la base de datos**, mientras que **Pydantic se encarga de validar y estructurar los datos**.
+Los esquemas principales son:
+
+```text
+UserCreate
+UserUpdate
+UserPatch
+UserResponse
+
+DeviceCreate
+DeviceUpdate
+DevicePatch
+DeviceResponse
+
+LoanCreate
+LoanResponse
+LoanDetailResponse
+```
+
+De esta manera:
+
+* **SQLAlchemy** se encarga de la interacción con la base de datos.
+* **Pydantic** se encarga de validar y estructurar los datos de la API.
 
 ---
 
-## Base de datos SQLite
+# Alembic y migraciones
+
+Para administrar los cambios de estructura de la base de datos se incorporó **Alembic**.
+
+La configuración principal se encuentra en:
+
+```text
+alembic.ini
+alembic/env.py
+alembic/versions/
+```
+
+Alembic utiliza los modelos de SQLAlchemy mediante:
+
+```python
+target_metadata = Base.metadata
+```
+
+y reconoce los modelos:
+
+```python
+from app.models import User, Device, Loan
+```
+
+## Inicialización
+
+El proyecto fue configurado utilizando:
+
+```bash
+uv run alembic init alembic
+```
+
+## Creación de la migración
+
+Se generó una migración para crear las tablas relacionadas con dispositivos y préstamos.
+
+Archivo generado:
+
+```text
+alembic/versions/226c24a90b7c_crear_dispositivos_y_prestamos.py
+```
+
+La migración crea:
+
+```text
+devices
+loans
+```
+
+y establece las claves foráneas correspondientes:
+
+```text
+loans.user_id   → users.id
+loans.device_id → devices.id
+```
+
+## Aplicación de la migración
+
+La migración se aplica mediante:
+
+```bash
+uv run alembic upgrade head
+```
+
+## Consulta del historial
+
+Para consultar las migraciones:
+
+```bash
+uv run alembic history
+```
+
+Para consultar la revisión actual:
+
+```bash
+uv run alembic current
+```
+
+La revisión aplicada actualmente corresponde a:
+
+```text
+226c24a90b7c (head)
+```
+
+También se verificó el estado de las migraciones mediante:
+
+```bash
+uv run alembic check
+```
+
+Resultado:
+
+```text
+No new upgrade operations detected.
+```
+
+Esto indica que no existen cambios pendientes de generar en las migraciones.
+
+---
+
+# Base de datos SQLite
 
 El proyecto utiliza SQLite como sistema de almacenamiento relacional.
 
@@ -204,95 +464,29 @@ El archivo de la base de datos es:
 device_systems.db
 ```
 
-La tabla utilizada para almacenar los usuarios es:
+Actualmente contiene las tablas principales:
 
 ```text
 users
+devices
+loans
 ```
 
-La conexión se configura en:
+Además, Alembic utiliza la tabla:
 
 ```text
-app/database/connection.py
+alembic_version
 ```
 
-La creación de las tablas se realiza mediante:
+para registrar la revisión de migración aplicada.
 
-```python
-Base.metadata.create_all(bind=engine)
-```
-
-Esta instrucción permite crear las tablas definidas en los modelos cuando se inicia la aplicación, si todavía no existen.
-
-La información registrada queda almacenada en el archivo de base de datos y puede consultarse nuevamente después de reiniciar el servidor.
+La estructura de la base de datos es administrada mediante Alembic y los modelos de SQLAlchemy.
 
 ---
 
-## Instalación y ejecución
+# CRUD de usuarios
 
-### Requisitos
-
-* Python instalado.
-* UV instalado.
-* El proyecto descargado o clonado.
-
-### Instalar las dependencias
-
-Desde la carpeta del proyecto, ejecutar:
-
-```bash
-uv sync
-```
-
-También es posible instalar las dependencias definidas en `requirements.txt`.
-
-### Iniciar el servidor en Windows
-
-Ejecutar:
-
-```powershell
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
-```
-
-La API estará disponible en:
-
-```text
-http://127.0.0.1:8000
-```
-
-Para comprobar el funcionamiento:
-
-```text
-http://127.0.0.1:8000/
-```
-
----
-
-## Documentación de la API
-
-### Swagger UI
-
-Disponible en:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
-Desde Swagger UI se pueden consultar y probar los endpoints, enviar parámetros y cuerpos JSON y revisar las respuestas y los códigos HTTP.
-
-### ReDoc
-
-Disponible en:
-
-```text
-http://127.0.0.1:8000/redoc
-```
-
-ReDoc permite consultar de forma organizada la documentación de la API y sus operaciones.
-
----
-
-## Endpoints disponibles
+Los usuarios mantienen las operaciones CRUD implementadas durante las etapas anteriores del proyecto.
 
 | Método | Endpoint           | Descripción                                              | Respuestas principales |
 | ------ | ------------------ | -------------------------------------------------------- | ---------------------- |
@@ -305,242 +499,316 @@ ReDoc permite consultar de forma organizada la documentación de la API y sus op
 
 ---
 
-## Filtros y ordenamiento
+# CRUD de dispositivos
 
-El endpoint `GET /users` permite consultar usuarios aplicando filtros y ordenamiento.
+Se incorporó el modelo `Device` y sus operaciones de gestión.
 
-### Filtrar por rol
-
-```text
-GET /users?role=admin
-```
-
-Roles permitidos:
-
-```text
-admin
-support
-user
-```
-
-### Filtrar por estado
-
-Usuarios activos:
-
-```text
-GET /users?is_active=true
-```
-
-Usuarios inactivos:
-
-```text
-GET /users?is_active=false
-```
-
-### Ordenar por nombre
-
-```text
-GET /users?ordenar_por=name
-```
-
-### Ordenar por fecha de creación
-
-```text
-GET /users?ordenar_por=created_at
-```
-
-Los filtros pueden combinarse con las opciones de ordenamiento disponibles.
+| Método | Endpoint               | Descripción                                   | Respuestas principales |
+| ------ | ---------------------- | --------------------------------------------- | ---------------------- |
+| GET    | `/devices`             | Lista dispositivos y permite aplicar filtros. | 200                    |
+| GET    | `/devices/{device_id}` | Consulta un dispositivo por ID.               | 200 / 404              |
+| POST   | `/devices`             | Registra un dispositivo.                      | 201 / 400 / 422        |
+| PUT    | `/devices/{device_id}` | Actualiza completamente un dispositivo.       | 200 / 400 / 404 / 422  |
+| PATCH  | `/devices/{device_id}` | Actualiza parcialmente un dispositivo.        | 200 / 400 / 404 / 422  |
+| DELETE | `/devices/{device_id}` | Elimina un dispositivo.                       | 204 / 404              |
 
 ---
 
-## Ejemplos de peticiones
+# Filtros de dispositivos
 
-### POST `/users`
+El endpoint:
 
-Permite registrar un usuario.
+```text
+GET /devices
+```
 
-Ejemplo de cuerpo JSON:
+permite realizar diferentes consultas.
+
+### Filtrar por tipo
+
+```text
+GET /devices?device_type=laptop
+```
+
+### Filtrar por disponibilidad
+
+```text
+GET /devices?is_available=true
+```
+
+### Filtrar por marca
+
+```text
+GET /devices?brand=Lenovo
+```
+
+### Buscar mediante texto
+
+```text
+GET /devices?search=ThinkPad
+```
+
+La búsqueda permite encontrar coincidencias utilizando diferentes campos del dispositivo.
+
+---
+
+# Gestión de préstamos
+
+Los préstamos permiten relacionar usuarios y dispositivos.
+
+## Consultar préstamos
+
+```text
+GET /loans
+```
+
+Obtiene los préstamos registrados y permite aplicar filtros.
+
+## Consultar préstamo por ID
+
+```text
+GET /loans/{loan_id}
+```
+
+Permite consultar un préstamo específico.
+
+## Crear préstamo
+
+```text
+POST /loans
+```
+
+Ejemplo:
 
 ```json
 {
-  "name": "Andres Perez",
-  "email": "andresperez@example.com",
-  "role": "support",
-  "is_active": true
+  "user_id": 1,
+  "device_id": 1
 }
 ```
 
-Cuando el registro se realiza correctamente, la API responde con:
+Al crear un préstamo se verifica:
+
+1. Que el usuario exista.
+2. Que el dispositivo exista.
+3. Que el dispositivo esté disponible.
+
+Cuando el préstamo se crea correctamente:
+
+* Se registra la fecha del préstamo.
+* El estado inicial es `active`.
+* El dispositivo pasa a `is_available = false`.
+
+## Devolver un dispositivo
 
 ```text
-201 Created
+PATCH /loans/{loan_id}/return
 ```
 
-Si el correo ya pertenece a otro usuario, responde con:
+Al registrar una devolución:
+
+* El estado del préstamo cambia a `returned`.
+* Se registra `return_date`.
+* El dispositivo vuelve a estar disponible.
+
+---
+
+# Consultas con JOIN
+
+Para obtener información relacionada de usuarios, dispositivos y préstamos se utilizan consultas SQLAlchemy con `join()`.
+
+El endpoint:
 
 ```text
-400 Bad Request
+GET /loans/details
 ```
 
-### GET `/users`
+permite consultar los préstamos incluyendo información relacionada.
 
-Obtiene la lista de usuarios almacenados en la base de datos.
-
-### GET `/users/{user_id}`
-
-Permite consultar un usuario mediante su identificador.
-
-Ejemplo:
+La consulta relaciona:
 
 ```text
-GET /users/2
+Loan → User
+Loan → Device
 ```
 
-Si el usuario no existe, responde con:
+y permite obtener información como:
+
+* ID del préstamo.
+* Nombre del usuario.
+* Correo del usuario.
+* Nombre del dispositivo.
+* Número de serie.
+* Tipo de dispositivo.
+* Marca.
+* Fecha del préstamo.
+* Fecha de devolución.
+* Estado.
+
+Esto permite consultar información de varias tablas en una sola operación.
+
+---
+
+# Filtros avanzados de préstamos
+
+El endpoint:
 
 ```text
-404 Not Found
+GET /loans
 ```
 
-### PUT `/users/{user_id}`
+permite aplicar diferentes filtros.
 
-Permite actualizar completamente un usuario.
-
-Ejemplo:
+## Filtrar por estado
 
 ```text
-PUT /users/2
+GET /loans?status=active
 ```
 
-Se deben enviar los campos requeridos para la actualización.
-
-### PATCH `/users/{user_id}`
-
-Permite modificar solamente los campos enviados.
-
-Ejemplo:
+Los estados permitidos son:
 
 ```text
-PATCH /users/2
+active
+returned
+overdue
 ```
 
-Cuerpo:
-
-```json
-{
-  "name": "Andres Perez"
-}
-```
-
-En este caso solamente se modifica el nombre.
-
-No se permite enviar un PATCH vacío. Si no se envían campos, la API responde con:
+## Filtrar por correo del usuario
 
 ```text
-400 Bad Request
+GET /loans?user_email=aprendiz@sena.edu.co
 ```
 
-### DELETE `/users/{user_id}`
+También permite realizar búsquedas parciales mediante `ilike`.
 
-Permite eliminar un usuario existente.
-
-Ejemplo:
+## Filtrar por tipo de dispositivo
 
 ```text
-DELETE /users/2
+GET /loans?device_type=laptop
 ```
 
-Si se elimina correctamente, responde con:
+## Filtrar por rango de fechas
+
+También se pueden utilizar:
 
 ```text
-204 No Content
+loan_date_from
+loan_date_to
 ```
 
-Si el usuario no existe, responde con:
+para limitar los resultados a un rango de fechas.
 
-```text
-404 Not Found
+Las consultas combinan condiciones mediante herramientas de SQLAlchemy como:
+
+```python
+join()
+where()
+and_()
+or_()
+ilike()
 ```
 
 ---
 
-## Validaciones y manejo de errores
+# Historial de préstamos
+
+## Historial de un usuario
+
+```text
+GET /users/{user_id}/loans
+```
+
+Permite consultar los préstamos asociados a un usuario.
+
+Antes de realizar la consulta se verifica que el usuario exista.
+
+## Historial de un dispositivo
+
+```text
+GET /devices/{device_id}/loans
+```
+
+Permite consultar los préstamos asociados a un dispositivo.
+
+Antes de realizar la consulta se verifica que el dispositivo exista.
+
+---
+
+# Validaciones y manejo de errores
 
 La aplicación utiliza Pydantic y `HTTPException` para validar los datos y manejar diferentes situaciones.
 
-| Código | Significado                                                  |
-| ------ | ------------------------------------------------------------ |
-| 200    | Operación realizada correctamente.                           |
-| 201    | Usuario creado correctamente.                                |
-| 204    | Usuario eliminado correctamente, sin contenido de respuesta. |
-| 400    | Error en una regla de negocio.                               |
-| 404    | Usuario no encontrado.                                       |
-| 422    | Error de validación de los datos recibidos.                  |
+| Código | Significado                                                 |
+| ------ | ----------------------------------------------------------- |
+| 200    | Operación realizada correctamente.                          |
+| 201    | Recurso creado correctamente.                               |
+| 204    | Recurso eliminado correctamente sin contenido de respuesta. |
+| 400    | Error en una regla de negocio.                              |
+| 404    | Recurso solicitado no encontrado.                           |
+| 409    | Conflicto con el estado actual del recurso.                 |
+| 422    | Error de validación de los datos recibidos.                 |
 
-### Validación del nombre
+## Usuario inexistente
 
-El nombre debe contener como mínimo tres caracteres.
-
-### Validación del correo
-
-El correo debe tener un formato válido.
-
-Además, no puede existir otro usuario con el mismo correo.
-
-### Validación de roles
-
-Los roles permitidos son:
-
-```text
-admin
-support
-user
-```
-
-Si se envía un rol diferente, la API responde con:
-
-```text
-400 Bad Request
-```
-
-### Validación del estado
-
-El campo `is_active` utiliza valores booleanos:
-
-```text
-true
-false
-```
-
-### Correos duplicados
-
-Antes de crear o actualizar un usuario, el servicio comprueba que el correo no esté asociado a otro registro.
-
-Si ya existe, responde con:
-
-```text
-400 Bad Request
-```
-
-### Usuarios inexistentes
-
-Cuando se intenta consultar, actualizar o eliminar un usuario que no existe, la API responde con:
+Cuando se consulta, actualiza o elimina un usuario que no existe, la API responde:
 
 ```text
 404 Not Found
 ```
 
-### PATCH vacío
+## Dispositivo inexistente
 
-Si se intenta realizar una actualización parcial sin enviar ningún campo, la API responde con:
+Cuando se intenta trabajar con un dispositivo que no existe:
 
 ```text
-400 Bad Request
+404 Not Found
+```
+
+## Dispositivo no disponible
+
+Si se intenta crear un préstamo utilizando un dispositivo que ya se encuentra prestado:
+
+```text
+409 Conflict
+```
+
+## Préstamo inexistente
+
+Si se consulta o intenta devolver un préstamo que no existe:
+
+```text
+404 Not Found
+```
+
+## Préstamo ya devuelto
+
+Si se intenta devolver nuevamente un préstamo cuyo estado ya es `returned`:
+
+```text
+409 Conflict
+```
+
+## Correo duplicado
+
+La API valida que no exista otro usuario con el mismo correo electrónico.
+
+## Serial duplicado
+
+La API valida que el número de serie de un dispositivo no esté registrado previamente.
+
+## Validaciones de Pydantic
+
+Los datos enviados a los endpoints son validados mediante los esquemas definidos en `app/schemas/`.
+
+Los errores de validación generan:
+
+```text
+422 Unprocessable Entity
 ```
 
 ---
 
-## Inyección de dependencias
+# Inyección de dependencias
 
 Se utiliza la inyección de dependencias de FastAPI mediante `Depends()`.
 
@@ -550,232 +818,508 @@ La dependencia de base de datos se encuentra en:
 app/dependencies/database_dependency.py
 ```
 
-La función `get_db` crea una sesión de SQLAlchemy para atender la solicitud y se encarga de cerrarla al finalizar.
+La función `get_db` proporciona una sesión de SQLAlchemy a cada solicitud y se encarga de cerrarla al finalizar.
 
-Esto permite que los endpoints utilicen la base de datos sin tener que crear y cerrar manualmente una sesión en cada operación.
+Esto permite que los endpoints trabajen con la base de datos sin crear y cerrar manualmente una sesión en cada operación.
 
 ---
 
-## Persistencia de datos
+# Persistencia de datos
 
-Los usuarios se almacenan en SQLite mediante SQLAlchemy.
+Los usuarios, dispositivos y préstamos se almacenan en SQLite mediante SQLAlchemy.
 
-A diferencia de la versión anterior, los registros no dependen de una lista temporal en memoria.
-
-Para comprobar la persistencia se realizó el siguiente procedimiento:
-
-1. Registrar usuarios desde Swagger UI.
-2. Consultarlos mediante `GET /users`.
-3. Detener el servidor.
-4. Iniciar nuevamente el servidor.
-5. Consultar nuevamente `GET /users`.
-6. Verificar que los usuarios continuaban disponibles.
-
-El resultado confirmó que los datos permanecen almacenados en:
+La información permanece almacenada en:
 
 ```text
 device_systems.db
 ```
 
-Por lo tanto, los registros no se pierden al reiniciar el servidor.
+La persistencia permite que los registros continúen disponibles después de detener y volver a iniciar el servidor.
+
+La estructura de las tablas es administrada mediante las migraciones de Alembic.
 
 ---
 
-## Manejo de zona horaria
+# Manejo de zona horaria
 
-El campo `created_at` registra la fecha y hora de creación del usuario utilizando la zona horaria:
+Los campos de fecha y hora utilizan la zona horaria:
 
 ```text
 America/Bogota
 ```
 
-Para permitir el funcionamiento de esta zona horaria en el entorno de Python se agregó la dependencia:
+Para permitir el funcionamiento de esta zona horaria en el entorno de Python se utiliza:
 
 ```text
 tzdata
 ```
 
-Esto permite que las fechas registradas correspondan a la hora de Colombia en lugar de utilizar directamente la hora UTC.
+Esto permite registrar las fechas utilizando la zona horaria correspondiente a Colombia.
+
+---
+
+# Documentación de la API
+
+## Swagger UI
+
+Disponible en:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+Swagger permite consultar y probar los endpoints, enviar parámetros y cuerpos JSON y revisar las respuestas HTTP.
+
+La documentación utiliza etiquetas para organizar los recursos:
+
+```text
+Users
+Devices
+Loans
+```
+
+Los endpoints también cuentan con:
+
+* `summary`
+* `description`
+* `response_description`
+* códigos de respuesta esperados
+* ejemplos de datos en los esquemas Pydantic
+
+## ReDoc
+
+Disponible en:
+
+```text
+http://127.0.0.1:8000/redoc
+```
+
+ReDoc permite consultar de manera organizada la documentación generada por FastAPI.
+
+---
+
+# Instalación y ejecución
+
+## Requisitos
+
+* Python instalado.
+* UV instalado.
+* Git instalado.
+* Proyecto descargado o clonado.
+
+## Instalar dependencias
+
+Desde la carpeta del proyecto:
+
+```bash
+uv sync
+```
+
+También se dispone del archivo:
+
+```text
+requirements.txt
+```
+
+con las dependencias utilizadas por el proyecto.
+
+## Ejecutar migraciones
+
+Para aplicar las migraciones:
+
+```bash
+uv run alembic upgrade head
+```
+
+Para comprobar el estado:
+
+```bash
+uv run alembic current
+```
+
+Para revisar el historial:
+
+```bash
+uv run alembic history
+```
+
+## Iniciar el servidor
+
+En Windows:
+
+```bash
+uv run uvicorn app.main:app --reload
+```
+
+La API estará disponible en:
+
+```text
+http://127.0.0.1:8000
+```
+
+Swagger:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+ReDoc:
+
+```text
+http://127.0.0.1:8000/redoc
+```
 
 ---
 
 # Evidencias
 
-Las siguientes evidencias documentan las pruebas realizadas durante el desarrollo del proyecto.
+Las evidencias se organizan en dos grupos para conservar la evolución completa del proyecto.
 
-## Evidencia 01 — Swagger UI
+## Evidencias de etapas anteriores
+
+Estas evidencias corresponden a las primeras etapas del desarrollo de `device_systems`, donde se implementaron el CRUD de usuarios, validaciones, persistencia, Swagger, ReDoc y organización inicial del proyecto.
+
+### Evidencia 01 — Swagger UI
 
 Captura de la documentación interactiva de la API mediante Swagger UI.
 
-![Evidencia 01](evidencias/Evidencia01.png)
+![Evidencia 01](evidencias/anteriores/Evidencia01.png)
 
 ---
 
-## Evidencia 02 — GET `/users`
+### Evidencia 02 — GET `/users`
 
 Consulta de la lista de usuarios registrados.
 
-![Evidencia 02](evidencias/Evidencia02.png)
+![Evidencia 02](evidencias/anteriores/Evidencia02.png)
 
 ---
 
-## Evidencia 03 — GET `/users/{user_id}`
+### Evidencia 03 — GET `/users/{user_id}`
 
 Consulta de un usuario específico mediante su ID.
 
-![Evidencia 03](evidencias/Evidencia03.png)
+![Evidencia 03](evidencias/anteriores/Evidencia03.png)
 
 ---
 
-## Evidencia 04 — POST `/users`
+### Evidencia 04 — POST `/users`
 
 Registro de un usuario mediante el endpoint POST.
 
-![Evidencia 04](evidencias/Evidencia04.png)
+![Evidencia 04](evidencias/anteriores/Evidencia04.png)
 
 ---
 
-## Evidencia 05 — PUT `/users/{user_id}`
+### Evidencia 05 — PUT `/users/{user_id}`
 
 Actualización completa de un usuario.
 
-![Evidencia 05](evidencias/Evidencia05.png)
+![Evidencia 05](evidencias/anteriores/Evidencia05.png)
 
 ---
 
-## Evidencia 06 — PATCH `/users/{user_id}`
+### Evidencia 06 — PATCH `/users/{user_id}`
 
 Actualización parcial de un usuario.
 
-![Evidencia 06](evidencias/Evidencia06.png)
+![Evidencia 06](evidencias/anteriores/Evidencia06.png)
 
 ---
 
-## Evidencia 07 — DELETE `/users/{user_id}`
+### Evidencia 07 — DELETE `/users/{user_id}`
 
 Eliminación de un usuario.
 
-![Evidencia 07](evidencias/Evidencia07.png)
+![Evidencia 07](evidencias/anteriores/Evidencia07.png)
 
 ---
 
-## Evidencia 08 — Usuario inexistente
+### Evidencia 08 — Usuario inexistente
 
 Prueba de consulta de un usuario que no existe y manejo de respuesta `404 Not Found`.
 
-![Evidencia 08](evidencias/Evidencia08.png)
+![Evidencia 08](evidencias/anteriores/Evidencia08.png)
 
 ---
 
-## Evidencia 09 — Correo duplicado
+### Evidencia 09 — Correo duplicado
 
 Prueba de registro utilizando un correo electrónico que ya existe y manejo de respuesta `400 Bad Request`.
 
-![Evidencia 09](evidencias/Evidencia09.png)
+![Evidencia 09](evidencias/anteriores/Evidencia09.png)
 
 ---
 
-## Evidencia 10 — Validación de datos
+### Evidencia 10 — Validación de datos
 
 Prueba de datos que no cumplen las validaciones de Pydantic y respuesta `422 Unprocessable Entity`.
 
-![Evidencia 10](evidencias/Evidencia10.png)
+![Evidencia 10](evidencias/anteriores/Evidencia10.png)
 
 ---
 
-## Evidencia 11 — PATCH vacío
+### Evidencia 11 — PATCH vacío
 
 Prueba de actualización parcial sin enviar campos y manejo del error `400 Bad Request`.
 
-![Evidencia 11](evidencias/Evidencia11.png)
+![Evidencia 11](evidencias/anteriores/Evidencia11.png)
 
 ---
 
-## Evidencia 12 — DELETE de usuario inexistente
+### Evidencia 12 — DELETE de usuario inexistente
 
 Prueba de eliminación de un usuario que no existe y respuesta `404 Not Found`.
 
-![Evidencia 12](evidencias/Evidencia12.png)
+![Evidencia 12](evidencias/anteriores/Evidencia12.png)
 
 ---
 
-## Evidencia 13 — ReDoc
+### Evidencia 13 — ReDoc
 
 Captura de la documentación de la API mediante ReDoc.
 
-![Evidencia 13](evidencias/Evidencia13.png)
+![Evidencia 13](evidencias/anteriores/Evidencia13.png)
 
 ---
 
-## Evidencia 14 — ReDoc y endpoints
+### Evidencia 14 — ReDoc y endpoints
 
 Segunda captura de la documentación de la API mostrando los endpoints disponibles.
 
-![Evidencia 14](evidencias/Evidencia14.png)
+![Evidencia 14](evidencias/anteriores/Evidencia14.png)
 
 ---
 
-## Evidencia 15 — Estructura final del proyecto
+### Evidencia 15 — Estructura del proyecto
 
-Captura de la estructura final del proyecto mediante el comando:
+Captura de la estructura del proyecto y organización de sus módulos.
+
+![Evidencia 15](evidencias/anteriores/Evidencia15.png)
+
+---
+
+### Evidencia 16 — Base de datos SQLite
+
+Captura de la base de datos `device_systems.db` mostrando los registros almacenados.
+
+![Evidencia 16](evidencias/anteriores/Evidencia16.png)
+
+---
+
+### Evidencia 17 — Persistencia después de reiniciar
+
+Evidencia de la persistencia de los datos después de detener y volver a iniciar el servidor.
+
+![Evidencia 17](evidencias/anteriores/Evidencia17.png)
+
+---
+
+# Evidencias GA1-220501096-01-AA1-EV10
+
+Las siguientes evidencias corresponden a la implementación de **Alembic, modelos relacionados, dispositivos, préstamos, consultas JOIN, filtros avanzados y documentación actualizada**.
+
+### Evidencia EV10-01 — Historial de Alembic
+
+Captura del historial de migraciones mediante `alembic history`.
+
+![Historial de Alembic](evidencias/ev10/01_historial_alembic.png)
+
+---
+
+### Evidencia EV10-02 — Aplicación de la migración
+
+Captura del proceso de aplicación de la migración mediante `alembic upgrade head`.
+
+![Upgrade head](evidencias/ev10/02_upgrade_head.png)
+
+---
+
+### Evidencia EV10-03 — Tablas de la base de datos
+
+Captura de las tablas generadas en SQLite, incluyendo `users`, `devices`, `loans` y `alembic_version`.
+
+![Tablas de la base de datos](evidencias/ev10/03_tablas_bd.png)
+
+---
+
+### Evidencia EV10-04 — Modelos y relaciones
+
+Captura de los modelos `User`, `Device` y `Loan`, incluyendo las relaciones entre ellos.
+
+![Modelos y relaciones](evidencias/ev10/04_modelos_relaciones.png)
+
+---
+
+### Evidencia EV10-05 — Schemas Pydantic
+
+Captura de los esquemas Pydantic utilizados para dispositivos y préstamos.
+
+![Schemas Pydantic](evidencias/ev10/05_schemas_pydantic.png)
+
+---
+
+### Evidencia EV10-06 — Swagger completo
+
+Captura de la documentación actualizada de la API mediante Swagger UI, incluyendo los recursos de usuarios, dispositivos y préstamos.
+
+![Swagger completo](evidencias/ev10/06_swagger_completo.png)
+
+---
+
+### Evidencia EV10-07 — Filtro de dispositivos
+
+Prueba del filtro:
 
 ```text
-tree app /F
+GET /devices?device_type=laptop
 ```
 
-La evidencia muestra la organización de los módulos:
-
-* `database`
-* `dependencies`
-* `models`
-* `routes`
-* `schemas`
-* `services`
-* `main.py`
-
-![Evidencia 15](evidencias/Evidencia15.png)
+![Filtro de dispositivos](evidencias/ev10/07_filtro_device_type.png)
 
 ---
 
-## Evidencia 16 — Base de datos SQLite
+### Evidencia EV10-08 — Crear préstamo
 
-Captura de la base de datos `device_systems.db`, mostrando la tabla `users` y los registros almacenados.
-
-La evidencia permite comprobar que los usuarios creados mediante la API están siendo almacenados de forma persistente.
-
-![Evidencia 16](evidencias/Evidencia16.png)
-
----
-
-## Evidencia 17 — Persistencia después de reiniciar el servidor
-
-Se detuvo el servidor FastAPI y posteriormente se inició nuevamente.
-
-Después del reinicio se ejecutó:
+Prueba de creación de un préstamo mediante:
 
 ```text
-GET /users
+POST /loans
 ```
 
-Los usuarios registrados anteriormente continuaron disponibles.
+La respuesta muestra la creación correcta del préstamo.
 
-Esta evidencia demuestra que la información permanece almacenada en SQLite y no depende únicamente de la memoria del servidor.
-
-![Evidencia 17](evidencias/Evidencia17.png)
+![Crear préstamo](evidencias/ev10/08_crear_prestamo.png)
 
 ---
 
-## Git Flow
+### Evidencia EV10-09 — Dispositivo no disponible
+
+Prueba de creación de un préstamo utilizando un dispositivo que ya se encuentra ocupado.
+
+La API responde con:
+
+```text
+409 Conflict
+```
+
+![Dispositivo no disponible](evidencias/ev10/09_dispositivo_no_disponible.png)
+
+---
+
+### Evidencia EV10-10 — Consulta de detalles con JOIN
+
+Prueba del endpoint:
+
+```text
+GET /loans/details
+```
+
+La respuesta incluye información del usuario y del dispositivo relacionado con cada préstamo.
+
+![Detalles de préstamos](evidencias/ev10/10_loan_details.png)
+
+---
+
+### Evidencia EV10-11 — Filtros de préstamos
+
+Pruebas de los filtros disponibles para el endpoint `GET /loans`, incluyendo el estado del préstamo y filtros relacionados con el usuario y el dispositivo.
+
+![Filtros de préstamos](evidencias/ev10/11_filtros_prestamos.png)
+
+---
+
+### Evidencia EV10-12 — Préstamos de un usuario
+
+Prueba del endpoint:
+
+```text
+GET /users/{user_id}/loans
+```
+
+La respuesta muestra el historial de préstamos asociados al usuario.
+
+![Préstamos del usuario](evidencias/ev10/12_prestamos_usuario.png)
+
+---
+
+### Evidencia EV10-13 — Historial de un dispositivo
+
+Prueba del endpoint:
+
+```text
+GET /devices/{device_id}/loans
+```
+
+La respuesta muestra el historial de préstamos asociados al dispositivo.
+
+![Historial del dispositivo](evidencias/ev10/13_prestamos_dispositivo.png)
+
+---
+
+### Evidencia EV10-14 — Devolución de préstamo
+
+Prueba de devolución mediante:
+
+```text
+PATCH /loans/{loan_id}/return
+```
+
+La respuesta muestra el cambio del estado del préstamo y el registro de la devolución.
+
+![Devolución de préstamo](evidencias/ev10/14_devolver_prestamo.png)
+
+---
+
+### Evidencia EV10-15 — Disponibilidad del dispositivo
+
+Después de realizar la devolución, se verifica que el dispositivo vuelve a estar disponible.
+
+![Dispositivo disponible](evidencias/ev10/15_dispositivo_disponible.png)
+
+---
+
+### Evidencia EV10-16 — Usuario inexistente
+
+Prueba de creación de un préstamo utilizando un usuario que no existe.
+
+La API responde con:
+
+```text
+404 Not Found
+```
+
+![Usuario inexistente](evidencias/ev10/16_usuario_no_existe.png)
+
+---
+
+### Evidencia EV10-17 — Préstamo ya devuelto
+
+Prueba de devolución de un préstamo que ya había sido devuelto.
+
+La API responde con:
+
+```text
+409 Conflict
+```
+
+![Préstamo ya devuelto](evidencias/ev10/17_prestamo_ya_devuelto.png)
+
+---
+
+### Evidencia EV10-18 — ReDoc
+
+Captura de la documentación actualizada mediante ReDoc.
+
+![ReDoc](evidencias/ev10/18_redoc.png)
+
+---
+
+# Git Flow
 
 Para organizar el desarrollo se utilizaron ramas de Git.
 
-La implementación de SQLAlchemy y persistencia se trabajó en:
-
-```text
-feature/sqlalchemy-crud
-```
-
-También se utilizaron las ramas:
+Las etapas anteriores utilizaron las ramas correspondientes al desarrollo inicial del proyecto, incluyendo:
 
 ```text
 main
@@ -784,73 +1328,136 @@ feature/fastapi-intermedio
 feature/sqlalchemy-crud
 ```
 
-Estructura general:
+Para la implementación de esta actividad se creó la rama:
 
 ```text
-main
-└── develop
-    ├── feature/fastapi-intermedio
-    └── feature/sqlalchemy-crud
+device_systems_alembic_relaciones
 ```
 
-La rama `feature/sqlalchemy-crud` contiene la implementación relacionada con SQLAlchemy, SQLite y las operaciones CRUD sobre la base de datos.
+Esta rama contiene la implementación de:
+
+* Alembic.
+* Migraciones.
+* Modelo `Device`.
+* Modelo `Loan`.
+* Relaciones entre modelos.
+* CRUD de dispositivos.
+* Gestión de préstamos.
+* Consultas con `JOIN`.
+* Filtros avanzados.
+* Documentación actualizada.
+* Evidencias de la actividad.
+
+La integración final con `main` se realizará después de completar las pruebas y verificar el funcionamiento del proyecto.
 
 ---
 
-## Estado final del proyecto
+# Verificaciones finales
 
-El proyecto cuenta actualmente con:
+Durante la implementación se realizaron diferentes verificaciones.
+
+## Carga de la API
+
+```bash
+uv run python -c "from app.main import app; print('API completa cargada correctamente')"
+```
+
+Resultado:
+
+```text
+API completa cargada correctamente
+```
+
+## Verificación de modelos
+
+```bash
+uv run python -c "from app.models import User, Device, Loan; print('Modelos y relaciones cargados correctamente')"
+```
+
+Resultado:
+
+```text
+Modelos y relaciones cargados correctamente
+```
+
+## Verificación de migraciones
+
+```bash
+uv run alembic check
+```
+
+Resultado:
+
+```text
+No new upgrade operations detected.
+```
+
+Esto confirma que los modelos actuales no presentan cambios pendientes de generar en una nueva migración.
+
+---
+
+# Estado final del proyecto
 
 * [x] FastAPI configurado.
 * [x] SQLAlchemy implementado.
 * [x] SQLite configurado.
+* [x] Pydantic v2 implementado.
 * [x] Modelo `User`.
-* [x] Esquemas Pydantic.
-* [x] Dependencia de base de datos.
-* [x] Operación de creación de usuarios.
-* [x] Consulta de usuarios.
-* [x] Consulta por ID.
-* [x] Actualización completa mediante PUT.
-* [x] Actualización parcial mediante PATCH.
-* [x] Eliminación de usuarios.
-* [x] Filtro por rol.
-* [x] Filtro por estado.
-* [x] Ordenamiento por nombre.
-* [x] Ordenamiento por fecha de creación.
-* [x] Validación de datos.
-* [x] Validación de roles.
-* [x] Validación de correos.
-* [x] Control de correos duplicados.
-* [x] Manejo de usuarios inexistentes.
+* [x] Modelo `Device`.
+* [x] Modelo `Loan`.
+* [x] Relaciones entre usuarios y préstamos.
+* [x] Relaciones entre dispositivos y préstamos.
+* [x] Schemas de usuarios.
+* [x] Schemas de dispositivos.
+* [x] Schemas de préstamos.
+* [x] CRUD de usuarios.
+* [x] CRUD de dispositivos.
+* [x] Gestión de préstamos.
+* [x] Devolución de dispositivos.
+* [x] Control de disponibilidad.
+* [x] Filtros de dispositivos.
+* [x] Filtros de préstamos.
+* [x] Consultas mediante `JOIN`.
+* [x] Historial de préstamos por usuario.
+* [x] Historial de préstamos por dispositivo.
+* [x] Validaciones Pydantic.
 * [x] Manejo de errores HTTP.
 * [x] Swagger UI.
 * [x] ReDoc.
-* [x] Persistencia de datos en SQLite.
-* [x] Persistencia comprobada después de reiniciar el servidor.
+* [x] Alembic configurado.
+* [x] Migración creada.
+* [x] Migración aplicada.
+* [x] Verificación mediante `alembic check`.
+* [x] Persistencia mediante SQLite.
 * [x] Manejo de zona horaria `America/Bogota`.
 * [x] Dependencia `tzdata`.
-* [x] Documentación mediante README.
-* [x] Evidencias de funcionamiento.
+* [x] Evidencias de las etapas anteriores.
+* [x] Evidencias correspondientes a EV10.
+* [x] README actualizado.
 
 ---
 
-## Reflexión final
+# Reflexión final
 
-Con esta actividad se actualizó el proyecto `device_systems`, pasando del almacenamiento temporal en memoria a una solución con persistencia utilizando **SQLAlchemy y SQLite**.
+Con esta actividad se continuó la evolución del proyecto `device_systems`, pasando de una API enfocada principalmente en la gestión de usuarios a una solución con diferentes entidades relacionadas.
 
-La implementación permitió trabajar con un modelo de datos para almacenar los usuarios y realizar las operaciones de creación, consulta, actualización y eliminación.
+La incorporación de **Alembic** permitió administrar de una manera más organizada los cambios realizados en la estructura de la base de datos. Las migraciones permiten registrar y aplicar las modificaciones necesarias sin depender de la creación automática de tablas al iniciar la aplicación.
 
-También se reforzó la organización del código mediante la separación de responsabilidades en modelos, esquemas, rutas, servicios, dependencias y conexión a la base de datos.
+También se implementaron los modelos `Device` y `Loan`, estableciendo relaciones entre usuarios, dispositivos y préstamos mediante SQLAlchemy.
 
-El uso de Pydantic permitió validar la información recibida por la API, mientras que SQLAlchemy permitió realizar las operaciones sobre la base de datos.
+El manejo de relaciones permitió realizar consultas más completas utilizando `JOIN`, obteniendo información de diferentes tablas en una misma operación.
 
-Además, se implementaron filtros, ordenamiento, validaciones de negocio y manejo de errores para mejorar el funcionamiento de los endpoints.
+Además, se implementaron filtros para consultar préstamos según su estado, el correo del usuario, el tipo de dispositivo y rangos de fechas. También se agregaron consultas para consultar el historial de préstamos de usuarios y dispositivos.
 
-Finalmente, se comprobó la persistencia de los datos reiniciando el servidor y realizando nuevamente la consulta de usuarios. Los registros continuaron disponibles, confirmando que la información está almacenada correctamente en SQLite.
+La gestión de préstamos permitió aplicar reglas de negocio como verificar que el usuario y el dispositivo existan, comprobar la disponibilidad del dispositivo, cambiar su estado al realizar un préstamo y devolverlo a disponibilidad cuando se registra la devolución.
+
+Finalmente, se actualizaron Swagger y ReDoc para documentar los nuevos endpoints, se realizaron pruebas de funcionamiento y se organizaron las evidencias de las diferentes etapas del proyecto.
+
+Esta actividad permitió reforzar el uso de **FastAPI, SQLAlchemy, Pydantic, SQLite, Alembic, relaciones entre modelos y consultas avanzadas**, manteniendo una estructura modular y organizada.
 
 ---
 
-## Autor
+# Autor
 
 **Stiven Hurtado Valencia**
 

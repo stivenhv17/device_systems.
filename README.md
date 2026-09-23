@@ -124,7 +124,7 @@ device_systems/
 │   │
 │   └── ev10/
 │       ├── 01_historial_alembic.png
-│       ├── 02_upgrade_head.png
+│       ├── 02_upgrade_headV2.png
 │       ├── 03_tablas_bd.png
 │       ├── 04_modelos_relaciones.png
 │       ├── 05_schemas_pydantic.png
@@ -983,7 +983,7 @@ Estas evidencias corresponden a las primeras etapas del desarrollo de `device_sy
 
 Captura de la documentación interactiva de la API mediante Swagger UI.
 
-![Evidencia 01](evidencias/anteriores/Evidencia01.png)
+![Evidencia 01](evidencias/Anteriores/Evidencia01.png)
 
 ---
 
@@ -991,7 +991,7 @@ Captura de la documentación interactiva de la API mediante Swagger UI.
 
 Consulta de la lista de usuarios registrados.
 
-![Evidencia 02](evidencias/anteriores/Evidencia02.png)
+![Evidencia 02](evidencias/Anteriores/Evidencia02.png)
 
 ---
 
@@ -999,7 +999,7 @@ Consulta de la lista de usuarios registrados.
 
 Consulta de un usuario específico mediante su ID.
 
-![Evidencia 03](evidencias/anteriores/Evidencia03.png)
+![Evidencia 03](evidencias/Anteriores/Evidencia03.png)
 
 ---
 
@@ -1007,7 +1007,7 @@ Consulta de un usuario específico mediante su ID.
 
 Registro de un usuario mediante el endpoint POST.
 
-![Evidencia 04](evidencias/anteriores/Evidencia04.png)
+![Evidencia 04](evidencias/Anteriores/Evidencia04.png)
 
 ---
 
@@ -1015,7 +1015,7 @@ Registro de un usuario mediante el endpoint POST.
 
 Actualización completa de un usuario.
 
-![Evidencia 05](evidencias/anteriores/Evidencia05.png)
+![Evidencia 05](evidencias/Anteriores/Evidencia05.png)
 
 ---
 
@@ -1023,7 +1023,7 @@ Actualización completa de un usuario.
 
 Actualización parcial de un usuario.
 
-![Evidencia 06](evidencias/anteriores/Evidencia06.png)
+![Evidencia 06](evidencias/Anteriores/Evidencia06.png)
 
 ---
 
@@ -1031,7 +1031,7 @@ Actualización parcial de un usuario.
 
 Eliminación de un usuario.
 
-![Evidencia 07](evidencias/anteriores/Evidencia07.png)
+![Evidencia 07](evidencias/Anteriores/Evidencia07.png)
 
 ---
 
@@ -1039,7 +1039,7 @@ Eliminación de un usuario.
 
 Prueba de consulta de un usuario que no existe y manejo de respuesta `404 Not Found`.
 
-![Evidencia 08](evidencias/anteriores/Evidencia08.png)
+![Evidencia 08](evidencias/Anteriores/Evidencia08.png)
 
 ---
 
@@ -1047,7 +1047,7 @@ Prueba de consulta de un usuario que no existe y manejo de respuesta `404 Not Fo
 
 Prueba de registro utilizando un correo electrónico que ya existe y manejo de respuesta `400 Bad Request`.
 
-![Evidencia 09](evidencias/anteriores/Evidencia09.png)
+![Evidencia 09](evidencias/Anteriores/Evidencia09.png)
 
 ---
 
@@ -1055,7 +1055,7 @@ Prueba de registro utilizando un correo electrónico que ya existe y manejo de r
 
 Prueba de datos que no cumplen las validaciones de Pydantic y respuesta `422 Unprocessable Entity`.
 
-![Evidencia 10](evidencias/anteriores/Evidencia10.png)
+![Evidencia 10](evidencias/Anteriores/Evidencia10.png)
 
 ---
 
@@ -1063,7 +1063,7 @@ Prueba de datos que no cumplen las validaciones de Pydantic y respuesta `422 Unp
 
 Prueba de actualización parcial sin enviar campos y manejo del error `400 Bad Request`.
 
-![Evidencia 11](evidencias/anteriores/Evidencia11.png)
+![Evidencia 11](evidencias/Anteriores/Evidencia11.png)
 
 ---
 
@@ -1071,7 +1071,7 @@ Prueba de actualización parcial sin enviar campos y manejo del error `400 Bad R
 
 Prueba de eliminación de un usuario que no existe y respuesta `404 Not Found`.
 
-![Evidencia 12](evidencias/anteriores/Evidencia12.png)
+![Evidencia 12](evidencias/Anteriores/Evidencia12.png)
 
 ---
 
@@ -1079,7 +1079,7 @@ Prueba de eliminación de un usuario que no existe y respuesta `404 Not Found`.
 
 Captura de la documentación de la API mediante ReDoc.
 
-![Evidencia 13](evidencias/anteriores/Evidencia13.png)
+![Evidencia 13](evidencias/Anteriores/Evidencia13.png)
 
 ---
 
@@ -1087,7 +1087,7 @@ Captura de la documentación de la API mediante ReDoc.
 
 Segunda captura de la documentación de la API mostrando los endpoints disponibles.
 
-![Evidencia 14](evidencias/anteriores/Evidencia14.png)
+![Evidencia 14](evidencias/Anteriores/Evidencia14.png)
 
 ---
 
@@ -1095,7 +1095,7 @@ Segunda captura de la documentación de la API mostrando los endpoints disponibl
 
 Captura de la estructura del proyecto y organización de sus módulos.
 
-![Evidencia 15](evidencias/anteriores/Evidencia15.png)
+![Evidencia 15](evidencias/Anteriores/Evidencia15.png)
 
 ---
 
@@ -1103,7 +1103,7 @@ Captura de la estructura del proyecto y organización de sus módulos.
 
 Captura de la base de datos `device_systems.db` mostrando los registros almacenados.
 
-![Evidencia 16](evidencias/anteriores/Evidencia16.png)
+![Evidencia 16](evidencias/Anteriores/Evidencia16.png)
 
 ---
 
@@ -1111,7 +1111,7 @@ Captura de la base de datos `device_systems.db` mostrando los registros almacena
 
 Evidencia de la persistencia de los datos después de detener y volver a iniciar el servidor.
 
-![Evidencia 17](evidencias/anteriores/Evidencia17.png)
+![Evidencia 17](evidencias/Anteriores/Evidencia17.png)
 
 ---
 
@@ -1123,7 +1123,7 @@ Las siguientes evidencias corresponden a la implementación de **Alembic, modelo
 
 Captura del historial de migraciones mediante `alembic history`.
 
-![Historial de Alembic](evidencias/ev10/01_historial_alembic.png)
+![Historial de Alembic](evidencias/EV10/01_historial_alembic.png)
 
 ---
 
@@ -1131,7 +1131,7 @@ Captura del historial de migraciones mediante `alembic history`.
 
 Captura del proceso de aplicación de la migración mediante `alembic upgrade head`.
 
-![Upgrade head](evidencias/ev10/02_upgrade_head.png)
+![Upgrade head](evidencias/EV10/02_upgrade_headV2.png)
 
 ---
 
@@ -1139,7 +1139,7 @@ Captura del proceso de aplicación de la migración mediante `alembic upgrade he
 
 Captura de las tablas generadas en SQLite, incluyendo `users`, `devices`, `loans` y `alembic_version`.
 
-![Tablas de la base de datos](evidencias/ev10/03_tablas_bd.png)
+![Tablas de la base de datos](evidencias/EV10/03_tablas_bd.png)
 
 ---
 
@@ -1147,7 +1147,7 @@ Captura de las tablas generadas en SQLite, incluyendo `users`, `devices`, `loans
 
 Captura de los modelos `User`, `Device` y `Loan`, incluyendo las relaciones entre ellos.
 
-![Modelos y relaciones](evidencias/ev10/04_modelos_relaciones.png)
+![Modelos y relaciones](evidencias/EV10/04_modelos_relaciones.png)
 
 ---
 
@@ -1155,7 +1155,7 @@ Captura de los modelos `User`, `Device` y `Loan`, incluyendo las relaciones entr
 
 Captura de los esquemas Pydantic utilizados para dispositivos y préstamos.
 
-![Schemas Pydantic](evidencias/ev10/05_schemas_pydantic.png)
+![Schemas Pydantic](evidencias/EV10/05_schemas_pydantic.png)
 
 ---
 
@@ -1163,7 +1163,7 @@ Captura de los esquemas Pydantic utilizados para dispositivos y préstamos.
 
 Captura de la documentación actualizada de la API mediante Swagger UI, incluyendo los recursos de usuarios, dispositivos y préstamos.
 
-![Swagger completo](evidencias/ev10/06_swagger_completo.png)
+![Swagger completo](evidencias/EV10/06_swagger_completo.png)
 
 ---
 
@@ -1175,7 +1175,7 @@ Prueba del filtro:
 GET /devices?device_type=laptop
 ```
 
-![Filtro de dispositivos](evidencias/ev10/07_filtro_device_type.png)
+![Filtro de dispositivos](evidencias/EV10/07_filtro_device_type.png)
 
 ---
 
@@ -1189,7 +1189,7 @@ POST /loans
 
 La respuesta muestra la creación correcta del préstamo.
 
-![Crear préstamo](evidencias/ev10/08_crear_prestamo.png)
+![Crear préstamo](evidencias/EV10/08_crear_prestamo.png)
 
 ---
 
@@ -1203,7 +1203,7 @@ La API responde con:
 409 Conflict
 ```
 
-![Dispositivo no disponible](evidencias/ev10/09_dispositivo_no_disponible.png)
+![Dispositivo no disponible](evidencias/EV10/09_dispositivo_no_disponible.png)
 
 ---
 
@@ -1217,7 +1217,7 @@ GET /loans/details
 
 La respuesta incluye información del usuario y del dispositivo relacionado con cada préstamo.
 
-![Detalles de préstamos](evidencias/ev10/10_loan_details.png)
+![Detalles de préstamos](evidencias/EV10/10_loan_details.png)
 
 ---
 
@@ -1225,7 +1225,7 @@ La respuesta incluye información del usuario y del dispositivo relacionado con 
 
 Pruebas de los filtros disponibles para el endpoint `GET /loans`, incluyendo el estado del préstamo y filtros relacionados con el usuario y el dispositivo.
 
-![Filtros de préstamos](evidencias/ev10/11_filtros_prestamos.png)
+![Filtros de préstamos](evidencias/EV10/11_filtros_prestamos.png)
 
 ---
 
@@ -1239,7 +1239,7 @@ GET /users/{user_id}/loans
 
 La respuesta muestra el historial de préstamos asociados al usuario.
 
-![Préstamos del usuario](evidencias/ev10/12_prestamos_usuario.png)
+![Préstamos del usuario](evidencias/EV10/12_prestamos_usuario.png)
 
 ---
 
@@ -1253,7 +1253,7 @@ GET /devices/{device_id}/loans
 
 La respuesta muestra el historial de préstamos asociados al dispositivo.
 
-![Historial del dispositivo](evidencias/ev10/13_prestamos_dispositivo.png)
+![Historial del dispositivo](evidencias/EV10/13_prestamos_dispositivo.png)
 
 ---
 
@@ -1267,7 +1267,7 @@ PATCH /loans/{loan_id}/return
 
 La respuesta muestra el cambio del estado del préstamo y el registro de la devolución.
 
-![Devolución de préstamo](evidencias/ev10/14_devolver_prestamo.png)
+![Devolución de préstamo](evidencias/EV10/14_devolver_prestamo.png)
 
 ---
 
@@ -1275,7 +1275,7 @@ La respuesta muestra el cambio del estado del préstamo y el registro de la devo
 
 Después de realizar la devolución, se verifica que el dispositivo vuelve a estar disponible.
 
-![Dispositivo disponible](evidencias/ev10/15_dispositivo_disponible.png)
+![Dispositivo disponible](evidencias/EV10/15_dispositivo_disponible.png)
 
 ---
 
@@ -1289,7 +1289,7 @@ La API responde con:
 404 Not Found
 ```
 
-![Usuario inexistente](evidencias/ev10/16_usuario_no_existe.png)
+![Usuario inexistente](evidencias/EV10/16_usuario_no_existe.png)
 
 ---
 
@@ -1303,7 +1303,7 @@ La API responde con:
 409 Conflict
 ```
 
-![Préstamo ya devuelto](evidencias/ev10/17_prestamo_ya_devuelto.png)
+![Préstamo ya devuelto](evidencias/EV10/17_prestamo_ya_devuelto.png)
 
 ---
 
@@ -1311,7 +1311,7 @@ La API responde con:
 
 Captura de la documentación actualizada mediante ReDoc.
 
-![ReDoc](evidencias/ev10/18_redoc.png)
+![ReDoc](evidencias/EV10/18_redoc.png)
 
 ---
 

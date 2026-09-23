@@ -19,6 +19,16 @@ class UserCreate(BaseModel):
     role: str
     is_active: bool = True
 
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "name": "Stiven Hurtado",
+                "email": "stiven@sena.edu.co",
+                "role": "user",
+                "is_active": True
+            }
+        }
+    }
 
 class UserUpdate(BaseModel):
     name: str = Field(min_length=3)

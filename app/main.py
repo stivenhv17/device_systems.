@@ -1,16 +1,14 @@
 from fastapi import FastAPI, Request
 
-from app.database.connection import Base, engine
-from app.models import user_model
+from app.routes.device_routes import router as device_router
 from app.routes.user_routes import router as user_router
-
-
-Base.metadata.create_all(bind=engine)
+from app.routes.loan_routes import history_router as loan_history_router
+from app.routes.loan_routes import router as loan_router
 
 
 app = FastAPI(
     title="device_systems API",
-    description="API REST para la gestión de usuarios del sistema device_systems.",
+    description="API REST para la gestión de usuarios, dispositivos y préstamos del sistema device_systems.",
     version="2.0.0",
     contact={
         "name": "Stiven Hurtado Valencia"
@@ -30,12 +28,14 @@ async def agregar_cabeceras(request: Request, call_next):
 
 
 app.include_router(user_router)
+app.include_router(device_router)
+app.include_router(loan_router)
+app.include_router(loan_history_router)
 
 
 @app.get(
     "/",
-    summary="Verificar funcionamiento de la API",
-    description="Comprueba que la API device_systems se encuentre funcionando correctamente."
+    include_in_schema=False
 )
 def inicio():
     return {

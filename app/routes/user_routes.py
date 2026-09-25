@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Depends, Query, Response, status
+from fastapi import APIRouter, Depends, Query, Request, Response, status
 from sqlalchemy.orm import Session
 
+from app.dependencies.auth_dependency import get_current_active_user
 from app.dependencies.database_dependency import get_db
+from app.middlewares.request_middleware import limiter
+from app.models.user_model import User
 from app.schemas.user_schema import (
     UserCreate,
     UserPatch,
@@ -24,17 +27,22 @@ router = APIRouter(
     response_description="Lista de usuarios registrados.",
     responses={
         200: {"description": "Usuarios obtenidos correctamente."},
-        422: {"description": "Parámetros de consulta inválidos."}
+        401: {"description": "Token inválido o no enviado."},
+        422: {"description": "Parámetros de consulta inválidos."},
+        429: {"description": "Se superó el límite de solicitudes."}
     }
 )
+@limiter.limit("30/minute")
 def listar_usuarios(
+    request: Request,
     role: str | None = Query(default=None),
     is_active: bool | None = Query(default=None),
     ordenar_por: str = Query(
         default="name",
         pattern="^(name|created_at)$"
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
 ):
     return user_service.obtener_todos(
         db,
@@ -52,12 +60,14 @@ def listar_usuarios(
     response_description="Información del usuario solicitado.",
     responses={
         200: {"description": "Usuario encontrado correctamente."},
+        401: {"description": "Token inválido o no enviado."},
         404: {"description": "El usuario solicitado no existe."}
     }
 )
 def obtener_usuario(
     user_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
 ):
     return user_service.obtener_por_id(user_id, db)
 

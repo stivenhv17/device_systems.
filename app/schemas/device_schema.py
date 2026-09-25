@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class DeviceCreate(BaseModel):
@@ -10,8 +10,8 @@ class DeviceCreate(BaseModel):
     brand: str | None = Field(default=None, max_length=50)
     is_available: bool = True
 
-    model_config = {
-        "json_schema_extra": {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "name": "Laptop Lenovo ThinkPad",
                 "serial_number": "LEN-2026-001",
@@ -20,7 +20,15 @@ class DeviceCreate(BaseModel):
                 "is_available": True
             }
         }
-    }
+    )
+
+    @field_validator("name", "serial_number", "device_type")
+    @classmethod
+    def validar_texto(cls, value: str) -> str:
+        texto = value.strip()
+        if not texto:
+            raise ValueError("El campo no puede estar vacío.")
+        return texto
 
 
 class DeviceUpdate(BaseModel):

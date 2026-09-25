@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.auth.security import get_password_hash
 from app.models.user_model import User
 from app.schemas.user_schema import ROLES_PERMITIDOS
 
@@ -68,6 +69,7 @@ def crear(usuario, db: Session):
     nuevo_usuario = User(
         name=usuario.name,
         email=usuario.email,
+        hashed_password=get_password_hash(usuario.password),
         role=usuario.role,
         is_active=usuario.is_active
     )

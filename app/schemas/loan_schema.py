@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 ESTADOS_PRESTAMO = {
@@ -14,14 +14,21 @@ class LoanCreate(BaseModel):
     user_id: int = Field(gt=0)
     device_id: int = Field(gt=0)
 
-    model_config = {
-        "json_schema_extra": {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "user_id": 1,
                 "device_id": 1
             }
         }
-    }
+    )
+
+    @field_validator("user_id", "device_id")
+    @classmethod
+    def validar_identificadores(cls, value: int) -> int:
+        if value <= 0:
+            raise ValueError("El identificador debe ser mayor que cero.")
+        return value
 
 
 class LoanUpdate(BaseModel):
@@ -40,6 +47,8 @@ class LoanResponse(BaseModel):
 
 
 class LoanDetailResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     user_id: int
     user_name: str

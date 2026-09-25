@@ -1,7 +1,12 @@
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
+from app.dependencies.auth_dependency import (
+    require_admin,
+    require_admin_or_support
+)
 from app.dependencies.database_dependency import get_db
+from app.models.user_model import User
 from app.schemas.device_schema import (
     DeviceCreate,
     DevicePatch,
@@ -74,12 +79,15 @@ def obtener_dispositivo(
     responses={
         201: {"description": "Dispositivo creado correctamente."},
         400: {"description": "El número de serie ya está registrado."},
+        401: {"description": "Token inválido o no enviado."},
+        403: {"description": "No tiene permisos para realizar esta operación."},
         422: {"description": "Los datos enviados no cumplen las validaciones."}
     }
 )
 def crear_dispositivo(
     datos: DeviceCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin_or_support)
 ):
     return device_service.crear(
         datos,
@@ -96,6 +104,8 @@ def crear_dispositivo(
     responses={
         200: {"description": "Dispositivo actualizado correctamente."},
         400: {"description": "El número de serie ya está registrado."},
+        401: {"description": "Token inválido o no enviado."},
+        403: {"description": "No tiene permisos para realizar esta operación."},
         404: {"description": "El dispositivo solicitado no existe."},
         422: {"description": "Los datos enviados no cumplen las validaciones."}
     }
@@ -103,7 +113,8 @@ def crear_dispositivo(
 def actualizar_dispositivo(
     device_id: int,
     datos: DeviceUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin_or_support)
 ):
     return device_service.actualizar_completo(
         device_id,
@@ -145,12 +156,15 @@ def actualizar_dispositivo_parcial(
     response_description="Dispositivo eliminado correctamente.",
     responses={
         204: {"description": "Dispositivo eliminado correctamente."},
+        401: {"description": "Token inválido o no enviado."},
+        403: {"description": "No tiene permisos para realizar esta operación."},
         404: {"description": "El dispositivo solicitado no existe."}
     }
 )
 def eliminar_dispositivo(
     device_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
 ):
     device_service.eliminar(
         device_id,

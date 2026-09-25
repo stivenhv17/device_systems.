@@ -1,3 +1,10 @@
+from app.schemas.auth_schema import (
+    Token,
+    TokenData,
+    UserLogin,
+    UserRegister
+)
+
 from app.schemas.device_schema import (
     DeviceCreate,
     DevicePatch,

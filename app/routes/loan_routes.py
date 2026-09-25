@@ -1,9 +1,15 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy.orm import Session
 
+from app.dependencies.auth_dependency import (
+    get_current_active_user,
+    require_admin_or_support
+)
 from app.dependencies.database_dependency import get_db
+from app.middlewares.request_middleware import limiter
+from app.models.user_model import User
 from app.schemas.loan_schema import (
     LoanCreate,
     LoanDetailResponse,
@@ -75,11 +81,14 @@ def listar_prestamos(
     description="Obtiene los préstamos incluyendo información del usuario y del dispositivo mediante consultas JOIN.",
     response_description="Lista de préstamos con información relacionada del usuario y dispositivo.",
     responses={
-        200: {"description": "Detalles de préstamos obtenidos correctamente."}
+        200: {"description": "Detalles de préstamos obtenidos correctamente."},
+        401: {"description": "Token inválido o no enviado."},
+        403: {"description": "No tiene permisos para realizar esta operación."}
     }
 )
 def listar_detalles(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin_or_support)
 ):
     return loan_service.obtener_detalles(db)
 
@@ -114,14 +123,19 @@ def obtener_prestamo(
     response_description="Préstamo creado correctamente.",
     responses={
         201: {"description": "Préstamo creado correctamente."},
+        401: {"description": "Token inválido o no enviado."},
         404: {"description": "El usuario o dispositivo solicitado no existe."},
         409: {"description": "El dispositivo no está disponible para préstamo."},
-        422: {"description": "Los datos enviados no cumplen las validaciones."}
+        422: {"description": "Los datos enviados no cumplen las validaciones."},
+        429: {"description": "Se superó el límite de solicitudes."}
     }
 )
+@limiter.limit("10/minute")
 def crear_prestamo(
+    request: Request,
     datos: LoanCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
 ):
     return loan_service.crear(
         datos,
@@ -137,13 +151,16 @@ def crear_prestamo(
     response_description="Devolución registrada correctamente.",
     responses={
         200: {"description": "Dispositivo devuelto correctamente."},
+        401: {"description": "Token inválido o no enviado."},
+        403: {"description": "No tiene permisos para realizar esta operación."},
         404: {"description": "El préstamo solicitado no existe."},
         409: {"description": "El préstamo ya fue devuelto."}
     }
 )
 def devolver_dispositivo(
     loan_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin_or_support)
 ):
     return loan_service.devolver(
         loan_id,
